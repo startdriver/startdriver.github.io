@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>//localhost:1313/</loc>
+    <loc>https://startdriver.github.io/</loc>
     <lastmod>2024-10-09T23:52:55+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/posts/</loc>
+    <loc>https://startdriver.github.io/posts/</loc>
     <lastmod>2024-10-09T23:52:55+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/posts/%E8%83%8C%E5%BD%B1/</loc>
+    <loc>https://startdriver.github.io/posts/%E8%83%8C%E5%BD%B1/</loc>
     <lastmod>2024-10-09T23:52:55+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/categories/</loc>
+    <loc>https://startdriver.github.io/categories/</loc>
   </url><url>
-    <loc>//localhost:1313/tags/</loc>
+    <loc>https://startdriver.github.io/tags/</loc>
   </url>
 </urlset>
