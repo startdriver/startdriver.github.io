@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html><head>
-	<meta name="generator" content="Hugo 0.136.4">
-<title>Linux驱动学习笔记</title>
+<title>linux内核基础知识</title>
 
 
-
-  
 
 
 <meta charset="utf-8">
@@ -13,18 +10,25 @@
 <meta name="google-site-verification" content="">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
 <meta content="telephone=no" name="format-detection">
-<meta name="description" content="My HomePage Description">
+<meta name="description" content="">
 <meta name="renderer" content="webkit">
 <meta name="theme-color" content="#ffffff">
 
 
 
-<meta property="og:url" content="https://startdriver.github.io/">
+<meta property="og:url" content="https://startdriver.github.io/posts/linux%E5%86%85%E6%A0%B8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
   <meta property="og:site_name" content="Linux驱动学习笔记">
-  <meta property="og:title" content="Linux驱动学习笔记">
-  <meta property="og:description" content="My HomePage Description">
+  <meta property="og:title" content="linux内核基础知识">
+  <meta property="og:description" content="linux内核主要由进度调度(SCHED), 内存管理(MM), 虚拟文件系统(VFS), 网络接口(NET)和进程间通信(IPC)5个子系统组成。
+进程调度 进度调度控制着多个进程对CPU的访问，使得多个进程能在CPU中“微观串行，宏观并行”。进程调度还控制着进程的多个状态的切换，当进程请求的资源得不到满足时，本进程会进入睡眠状态，资源可用时，该进程可以被唤醒进入就绪状态。而睡眠分为可中断的浅度睡眠和不可中断的深度睡眠，前端睡眠可被中断唤醒。 内核线程启动的函数为:
+pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags); 内存管理 内存管理的作用是使各个进程安全地共享内存区域，对进程完成虚拟内存到物理内存的转换。 虚拟文件系统 虚拟文件系统是对各种文件的一种抽象，使得在上层应用可以使用统一的文件操作接口，虚拟文件系统向上提供接口，向下调用具体文件系统或者设备驱动实现的file_operations结构体的成员函数。 网络接口 网络接口提供了对各种网络标准的存取和各种网络硬件的支持。网络接口包括网络协议和网络驱动程序
+进程间通信 使进程之间可以通信，通信机制包括信号量, 共享内存， 消息队列， 管道， UNIX域套接字等。
+linux内核引导 bootrom-&gt;bootloader-&gt;内核-&gt;init bootrom一般是有SoC厂家自己编写，比较著名的bootloader有U-boot, 用户空间的init程序常有busybox init, SysVinit, systemd">
   <meta property="og:locale" content="zh_cn">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-22T22:18:55+08:00">
+    <meta property="article:modified_time" content="2024-10-22T22:18:55+08:00">
 
 
 
@@ -32,8 +36,12 @@
 
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Linux驱动学习笔记">
-  <meta name="twitter:description" content="My HomePage Description">
+  <meta name="twitter:title" content="linux内核基础知识">
+  <meta name="twitter:description" content="linux内核主要由进度调度(SCHED), 内存管理(MM), 虚拟文件系统(VFS), 网络接口(NET)和进程间通信(IPC)5个子系统组成。
+进程调度 进度调度控制着多个进程对CPU的访问，使得多个进程能在CPU中“微观串行，宏观并行”。进程调度还控制着进程的多个状态的切换，当进程请求的资源得不到满足时，本进程会进入睡眠状态，资源可用时，该进程可以被唤醒进入就绪状态。而睡眠分为可中断的浅度睡眠和不可中断的深度睡眠，前端睡眠可被中断唤醒。 内核线程启动的函数为:
+pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags); 内存管理 内存管理的作用是使各个进程安全地共享内存区域，对进程完成虚拟内存到物理内存的转换。 虚拟文件系统 虚拟文件系统是对各种文件的一种抽象，使得在上层应用可以使用统一的文件操作接口，虚拟文件系统向上提供接口，向下调用具体文件系统或者设备驱动实现的file_operations结构体的成员函数。 网络接口 网络接口提供了对各种网络标准的存取和各种网络硬件的支持。网络接口包括网络协议和网络驱动程序
+进程间通信 使进程之间可以通信，通信机制包括信号量, 共享内存， 消息队列， 管道， UNIX域套接字等。
+linux内核引导 bootrom-&gt;bootloader-&gt;内核-&gt;init bootrom一般是有SoC厂家自己编写，比较著名的bootloader有U-boot, 用户空间的init程序常有busybox init, SysVinit, systemd">
 
 
 
@@ -60,6 +68,8 @@
 
 
 
+      <script src="/js/toc.js"></script>
+    
     <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
 
 <link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
@@ -98,9 +108,11 @@
                 
                 
                 
+                    
                 
                 
-                <a class="a-block drawer-menu-item false" href="/posts">
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
                     归档
                 </a>
                 
@@ -125,6 +137,52 @@
                 </a>
                 
             
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#linux%e5%86%85%e6%a0%b8%e5%bc%95%e5%af%bc" class="nav-linux内核引导">
+									linux内核引导
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
             
         </div>
     </div>
@@ -166,19 +224,38 @@
             <div id="content">
                 <div id="streamContainer" class="stream-container">
 
-    <div class="post-list-container post-list-container-no-background">
-        
-        
-            <a href="/posts/linux%E5%86%85%E6%A0%B8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                linux内核基础知识
-                            </div>
-                            <div class="post-item-summary">
-                                
-                                    <p>linux内核主要由进度调度(SCHED), 内存管理(MM), 虚拟文件系统(VFS), 网络接口(NET)和进程间通信(IPC)5个子系统组成。</p>
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    linux内核基础知识
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2024-10-22 22:18
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>linux内核主要由进度调度(SCHED), 内存管理(MM), 虚拟文件系统(VFS), 网络接口(NET)和进程间通信(IPC)5个子系统组成。</p>
 <!-- raw HTML omitted -->
 <p><img src="/posts/imgs/linux_kernel_overview.jpg" alt="linux kernel overview"></p>
 <ol>
@@ -210,60 +287,52 @@
 <h3 id="linux内核引导">linux内核引导</h3>
 <div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>bootrom-&gt;bootloader-&gt;<span style="color:#a61717;background-color:#e3d2d2">内核</span>-&gt;init
 </span></span></code></pre></div><p>bootrom一般是有SoC厂家自己编写，比较著名的bootloader有U-boot, 用户空间的init程序常有busybox init, SysVinit, systemd</p>
-                                
-                            </div>
-                            <div class="post-item-meta">
-    2024-10-22
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
 
-                        </div>
-                        
-                        
-                    </div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">最后修改于 2024-10-22</p>
+                    
                 </div>
-        
-            <a href="/posts/%E8%83%8C%E5%BD%B1/" class="a-block">
-                <div class="post-item-wrapper">
-                    <div class="post-item post-item-no-divider">
-                        <div class="post-item-info-wrapper">
-                            <div class="post-item-title">
-                                背影
-                            </div>
-                            <div class="post-item-summary">
-                                
-                                    <p>我与父亲不相见已二年余了，我最不能忘记的是他的背影。那年冬天，祖母死了，父亲的差使也交卸了，正是祸不单行的日子，我从北京到徐州，打算跟着父亲奔丧回家。到徐州见着父亲，看见满院狼藉的东西，又想起祖母，不禁簌簌地流下眼泪。父亲说，“事已如此，不必难过，好在天无绝人之路！”</p>
-                                
-                            </div>
-                            <div class="post-item-meta">
-    2024-10-09
-    &emsp;
-    
-    
-    
-    &emsp;
-    
-</div>
+            </div>
+            
+            
+            <nav class="post-pagination">
 
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-        
-        </a>
+                
+                <a class="newer-posts">
+			下回<br>已经到头啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/%E8%83%8C%E5%BD%B1/">
+			上回<br>背影
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
     </div>
 
 
                     </div>
             </div><div id="sideContainer" class="side-container">
     
-    <a class="a-block nav-head active" href="https://startdriver.github.io/">
+    <a class="a-block nav-head false" href="https://startdriver.github.io/">
     
         <div class="nav-title">
             Linux驱动学习笔记
@@ -281,9 +350,11 @@
             
             
             
+                
             
             
-            <a class="a-block nav-link-item false" href="/posts">
+            
+            <a class="a-block nav-link-item active" href="/posts">
                 归档
             </a>
             
@@ -331,6 +402,52 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
         
 
         
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#linux%e5%86%85%e6%a0%b8%e5%bc%95%e5%af%bc" class="nav-linux内核引导">
+									linux内核引导
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
     </div>
     <div class="pagination">
         <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
@@ -347,13 +464,8 @@ Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> b
         </a>
         
         
-        
-        
     </div>
 </div>
-
-
-
 
 <div id="single-column-footer">
 Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
