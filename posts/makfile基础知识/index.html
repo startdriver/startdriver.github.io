@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html><head>
+<title>makefile基本知识</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:url" content="https://startdriver.github.io/posts/makfile%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+  <meta property="og:site_name" content="Linux驱动学习笔记">
+  <meta property="og:title" content="makefile基本知识">
+  <meta property="og:description" content="参考how-to-write-makefile
+$(sources:.c=.d): 替换列表sources中元素中的.c为.d
+%.: 任意字符
+*: 任意字符 ~: HOME环境变量 ?: $&lt;: 表示第一个依赖文件 $@: 表示目标集合，依次取出目标，并执行命令 $$: $字符 $*: 表示目标文件（例如 file.o中的file) $$$$: 随机的四位数
+书写规则 文件搜寻 VPATH指定寻找文件的路径，例如
+VPATH = src:../headers 伪目标 .PHONY: ：指定伪目标，不生成目标，例如
+.PHONY: clean clean: rm -r *.o 多目标 &lt;target1&gt; &lt;target2&gt; ... : &lt;prerequirements&gt; &lt;commands&gt; 等价于
+&lt;target1&gt; : &lt;prerequirements&gt; &lt;commands&gt; &lt;target2&gt; : &lt;prerequirements&gt; &lt;commands&gt; ... 静态模式 语法
+&lt;target ...&gt; : &lt;target-pattern&gt; : &lt;prereq-pattern ...&gt; &lt;command&gt; ... 依次对目标文件&lt;target ...&gt;中以&lt;target-pattern&gt;的形式作为目标，以&lt;prereq-pattern&gt;形式作为目标文件的依赖。例如:">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-24T22:35:55+08:00">
+    <meta property="article:modified_time" content="2024-10-24T22:35:55+08:00">
+
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="makefile基本知识">
+  <meta name="twitter:description" content="参考how-to-write-makefile
+$(sources:.c=.d): 替换列表sources中元素中的.c为.d
+%.: 任意字符
+*: 任意字符 ~: HOME环境变量 ?: $&lt;: 表示第一个依赖文件 $@: 表示目标集合，依次取出目标，并执行命令 $$: $字符 $*: 表示目标文件（例如 file.o中的file) $$$$: 随机的四位数
+书写规则 文件搜寻 VPATH指定寻找文件的路径，例如
+VPATH = src:../headers 伪目标 .PHONY: ：指定伪目标，不生成目标，例如
+.PHONY: clean clean: rm -r *.o 多目标 &lt;target1&gt; &lt;target2&gt; ... : &lt;prerequirements&gt; &lt;commands&gt; 等价于
+&lt;target1&gt; : &lt;prerequirements&gt; &lt;commands&gt; &lt;target2&gt; : &lt;prerequirements&gt; &lt;commands&gt; ... 静态模式 语法
+&lt;target ...&gt; : &lt;target-pattern&gt; : &lt;prereq-pattern ...&gt; &lt;command&gt; ... 依次对目标文件&lt;target ...&gt;中以&lt;target-pattern&gt;的形式作为目标，以&lt;prereq-pattern&gt;形式作为目标文件的依赖。例如:">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "og0xoeyxfi");
+</script>
+
+
+
+  
+
+
+
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    归档
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    分类
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    标签
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b9%a6%e5%86%99%e8%a7%84%e5%88%99" class="nav-书写规则">
+									书写规则
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%87%e4%bb%b6%e6%90%9c%e5%af%bb" class="nav-文件搜寻">
+									文件搜寻
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bc%aa%e7%9b%ae%e6%a0%87" class="nav-伪目标">
+									伪目标
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%9b%ae%e6%a0%87" class="nav-多目标">
+									多目标
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%99%e6%80%81%e6%a8%a1%e5%bc%8f" class="nav-静态模式">
+									静态模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e4%be%9d%e8%b5%96" class="nav-自动生成依赖">
+									自动生成依赖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4" class="nav-命令">
+									命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e6%98%be%e7%a4%ba" class="nav-命令显示">
+									命令显示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e7%8e%af%e5%a2%83" class="nav-命令环境">
+									命令环境
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e9%94%99%e8%af%af" class="nav-命令错误">
+									命令错误
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b5%8c%e5%a5%97%e6%89%a7%e8%a1%8cmake" class="nav-嵌套执行make">
+									嵌套执行make
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e4%b9%89%e5%91%bd%e4%bb%a4%e5%8c%85" class="nav-定义命令包">
+									定义命令包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f" class="nav-变量">
+									变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e5%9f%ba%e7%a1%80" class="nav-变量基础">
+									变量基础
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e7%9a%84%e9%ab%98%e7%ba%a7%e7%94%a8%e6%b3%95" class="nav-变量的高级用法">
+									变量的高级用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e6%9b%bf%e6%8d%a2" class="nav-变量替换">
+									变量替换
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%8a%e5%8f%98%e9%87%8f%e7%9a%84%e5%80%bc%e5%86%8d%e5%bd%93%e6%88%90%e5%8f%98%e9%87%8f" class="nav-把变量的值再当成变量">
+									把变量的值再当成变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%bf%bd%e5%8a%a0%e5%8f%98%e9%87%8f%e5%80%bc" class="nav-追加变量值">
+									追加变量值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#override" class="nav-override">
+									override
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%8c%e5%8f%98%e9%87%8f" class="nav-多行变量">
+									多行变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" class="nav-环境变量">
+									环境变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%ae%e6%a0%87%e5%8f%98%e9%87%8f" class="nav-目标变量">
+									目标变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e5%bc%8f%e5%8f%98%e9%87%8f" class="nav-模式变量">
+									模式变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad" class="nav-条件判断">
+									条件判断
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b0" class="nav-函数">
+									函数
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="https://startdriver.github.io/">
+            Linux驱动学习笔记
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://startdriver.github.io/">
+        <div class="single-column-header-title">Linux驱动学习笔记</div>
+        
+        <div class="single-column-header-subtitle">linux driver learning note</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    makefile基本知识
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2024-10-24 22:35
+                        </time>
+                        
+
+                        
+
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>参考<a href="https://seisman.github.io/how-to-write-makefile">how-to-write-makefile</a></p>
+<p><code>$(sources:.c=.d)</code>: 替换列表<code>sources</code>中元素中的<code>.c</code>为<code>.d</code></p>
+<p><code>%.</code>: 任意字符</p>
+<p><code>*</code>: 任意字符
+<code>~</code>: <code>HOME</code>环境变量
+<code>?</code>:
+<code>$&lt;</code>: 表示第一个依赖文件
+<code>$@</code>: 表示目标集合，依次取出目标，并执行命令
+<code>$$</code>: <code>$</code>字符
+<code>$*</code>: 表示目标文件（例如 <code>file.o</code>中的<code>file</code>)
+<code>$$$$</code>: 随机的四位数</p>
+<h1 id="书写规则">书写规则</h1>
+<h2 id="文件搜寻">文件搜寻</h2>
+<p><code>VPATH</code>指定寻找文件的路径，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">VPATH</span> = src:../headers
+</span></span></code></pre></div><h2 id="伪目标">伪目标</h2>
+<p><code>.PHONY: </code>：指定伪目标，不生成目标，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">.PHONY</span>: clean
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008b45">clean</span>:
+</span></span><span style="display:flex;"><span>	rm -r *.o
+</span></span></code></pre></div><h2 id="多目标">多目标</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">&lt;target1&gt; &lt;target2&gt; ... </span>: &lt;prerequirements&gt;
+</span></span><span style="display:flex;"><span>	&lt;commands&gt;
+</span></span></code></pre></div><p>等价于</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">&lt;target1&gt; </span>: &lt;prerequirements&gt;
+</span></span><span style="display:flex;"><span>	&lt;commands&gt;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span><span style="color:#008b45">&lt;target2&gt; </span>: &lt;prerequirements&gt;
+</span></span><span style="display:flex;"><span>	&lt;commands&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">...</span>
+</span></span></code></pre></div><h2 id="静态模式">静态模式</h2>
+<p>语法</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#008b45">&lt;target ...&gt; </span>: &lt;target-pattern&gt; : &lt;prereq-pattern ...&gt;
+</span></span><span style="display:flex;"><span>	&lt;command&gt;
+</span></span><span style="display:flex;"><span>	...
+</span></span></code></pre></div><p>依次对目标文件<code>&lt;target ...&gt;</code>中以<code>&lt;target-pattern&gt;</code>的形式作为目标，以<code>&lt;prereq-pattern&gt;</code>形式作为目标文件的依赖。例如:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#00688b">objects</span> = foo.o bar.o
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008b45">all</span>: <span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#00688b">objects</span><span style="color:#8b008b;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008b45">$(objects)</span>: %.o: %.c
+</span></span><span style="display:flex;"><span>    <span style="color:#8b008b;font-weight:bold">$(</span>CC<span style="color:#8b008b;font-weight:bold">)</span> -c <span style="color:#8b008b;font-weight:bold">$(</span>CFLAGS<span style="color:#8b008b;font-weight:bold">)</span> $&lt; -o <span style="color:#00688b">$@</span>
+</span></span></code></pre></div><p>等价于：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#008b45">foo.o</span>: foo.c
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">$(</span>CC<span style="color:#8b008b;font-weight:bold">)</span> -c <span style="color:#8b008b;font-weight:bold">$(</span>CFLAGS<span style="color:#8b008b;font-weight:bold">)</span> foo.c -o foo.o
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span><span style="color:#008b45">bar.o</span>: bar.c
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">$(</span>CC<span style="color:#8b008b;font-weight:bold">)</span> -c <span style="color:#8b008b;font-weight:bold">$(</span>CFLAGS<span style="color:#8b008b;font-weight:bold">)</span> bar.c -o bar.o
+</span></span></code></pre></div><h2 id="自动生成依赖">自动生成依赖</h2>
+<p>在Makefile中，我们的依赖关系可能会需要包含一系列的头文件，但是，如果是一个比较大型的工程，你必需清楚哪些C文件包含了哪些头文件，并且，你在加入或删除头文件时，也需要小心地修改Makefile，这是一个很没有维护性的工作。为了避免这种繁重而又容易出错的事情，我们可以使用C/C++编译的一个功能。大多数的C/C++编译器都支持一个“-M”的选项，即自动找寻源文件中包含的头文件，并生成一个依赖关系。例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#228b22"># 有的编译器的参数是MM，那么指令变为 cc -MM main.c</span>
+</span></span><span style="display:flex;"><span>cc -M main.c
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># main.o: main.c hello.h</span>
+</span></span></code></pre></div><p>GNU组织建议把编译器为每一个源文件的自动生成的依赖关系放到一个文件中，为每一个 <code>name.c</code> 的文件都生成一个 <code>name.d</code> 的Makefile文件， <code>.d</code> 文件中就存放对应 <code>.c</code> 文件的依赖关系。于是，我们可以写出 <code>.c</code> 文件和 <code>.d</code> 文件的依赖关系，并让make自动更新或生成 <code>.d</code> 文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#008b45">%.d</span>: %.c
+</span></span><span style="display:flex;"><span>    @set -e; rm -f <span style="color:#00688b">$@</span>; <span style="color:#cd5555">\
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555"></span>    <span style="color:#8b008b;font-weight:bold">$(</span>CC<span style="color:#8b008b;font-weight:bold">)</span> -M <span style="color:#8b008b;font-weight:bold">$(</span>CPPFLAGS<span style="color:#8b008b;font-weight:bold">)</span> $&lt; &gt; <span style="color:#00688b">$@</span>.<span style="color:#00688b">$$$$</span>; <span style="color:#cd5555">\
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555"></span>    sed <span style="color:#cd5555">&#39;s,\($*\)\.o[ :]*,\1.o $@ : ,g&#39;</span> &lt; <span style="color:#00688b">$@</span>.<span style="color:#00688b">$$$$</span> &gt; <span style="color:#00688b">$@</span>; <span style="color:#cd5555">\
+</span></span></span><span style="display:flex;"><span><span style="color:#cd5555"></span>    rm -f <span style="color:#00688b">$@</span>.<span style="color:#00688b">$$$$</span>
+</span></span></code></pre></div><p>之后再在Makefile中加入</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#008b45">include $(sources</span>:.c=.d)
+</span></span></code></pre></div><h1 id="命令">命令</h1>
+<h2 id="命令显示">命令显示</h2>
+<p>每条命令前都是以<code>&lt;Tab&gt;</code>开头，在命令前加<code>@</code>可以使命令在执行时不显示出来，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">display</span>:
+</span></span><span style="display:flex;"><span>	@echo <span style="color:#cd5555">&#34;not display&#34;</span> <span style="color:#228b22"># 在执行时不显示命令本身</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#658b00">echo</span> <span style="color:#cd5555">&#34;display&#34;</span>
+</span></span></code></pre></div><p>全局忽略显示: 在make是加上<code>-s</code>或<code>--silent</code>或<code>--quiet</code>参数
+如何要只显示命令，而不用执行，在使用<code>-n</code>或<code>--just-print</code>参数</p>
+<h2 id="命令环境">命令环境</h2>
+<p>每条命令都在一个独立shell环境中，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">exec</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#658b00">pwd</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#658b00">cd</span> ..
+</span></span><span style="display:flex;"><span>	<span style="color:#658b00">pwd</span> <span style="color:#228b22"># 和前一个pwd的输出是一样的，因为shell环境是独立的，不会受上一个cd .. 的影响</span>
+</span></span></code></pre></div><h2 id="命令错误">命令错误</h2>
+<p>在命令前加<code>-</code>可以忽略错误，不会中断make的执行，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">clean</span>:
+</span></span><span style="display:flex;"><span>	-rm -f *.o
+</span></span></code></pre></div><p>全局忽略错误：在make时加上<code>-i</code>或<code>--ignore-error</code>参数
+<code>-k</code>或<code>--keep-going</code>是表示，当命令发生错误时，只中断当前目标的规则，不影响其他目标的规则。</p>
+<h2 id="嵌套执行make">嵌套执行make</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">subsystem</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#658b00">cd</span> subdir &amp;&amp; <span style="color:#8b008b;font-weight:bold">$(</span>MAKE<span style="color:#8b008b;font-weight:bold">)</span>
+</span></span></code></pre></div><p>或</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">subsystem</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#8b008b;font-weight:bold">$(</span>MAKE<span style="color:#8b008b;font-weight:bold">)</span> -C subdir
+</span></span></code></pre></div><p>父级的变量可以传递到子级中，<code>-w</code>参数可以显示正在进入子级执行makefile，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>make: Entering directory <span style="color:#cd5555">`</span>/home/&lt;home&gt;/gnu/make<span style="color:#a61717;background-color:#e3d2d2">&#39;</span>.
+</span></span></code></pre></div><h2 id="定义命令包">定义命令包</h2>
+<p>语法</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">define</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;command-package-name&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;command1&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;command2&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">endef</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 通过$(&lt;command-package-name&gt;)来调用
+</span></span></span></code></pre></div><p>定义一组命令为一个命令包，需要指定这一序列命令的时候，调用<code>$(&lt;command-package-name&gt;)</code></p>
+<h1 id="变量">变量</h1>
+<p>变量的名字是大小写敏感的，命名可以包含字符、数字，下划线（可以是数字开头），不要包含: <code>:</code>, <code>#</code>, <code>=</code>, 空字符，推荐大写单词首字母，例如<code>MakeFlags</code>，以避免和环境变量冲突。变量在使用时类似于C/C++中的宏，是直接展开的。</p>
+<h2 id="变量基础">变量基础</h2>
+<p>变量的定义，直接给予初值，使用时在变量名前加<code>$</code>, 最好对变量加上<code>()</code>或<code>{}</code>，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Makefile" data-lang="Makefile"><span style="display:flex;"><span><span style="color:#00688b">objects</span> = program.o foo.o utils.o
+</span></span><span style="display:flex;"><span>	cc -o program <span style="color:#8b008b;font-weight:bold">$(</span>objects<span style="color:#8b008b;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008b45">$(objects)</span>: defs.h
+</span></span></code></pre></div><p>变量可以使用后面的变量来定义，<code>=</code>定义是用时展开</p>
+<p><code>:=</code> 定义变量是立即展开，可以阻止使用后面的变量来定义，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">x</span> := foo
+</span></span><span style="display:flex;"><span><span style="color:#00688b">y</span> := <span style="color:#8b008b;font-weight:bold">$(</span>x<span style="color:#8b008b;font-weight:bold">)</span> bar
+</span></span><span style="display:flex;"><span><span style="color:#00688b">x</span> := later
+</span></span></code></pre></div><p>等价于</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">y</span> := foo bar
+</span></span><span style="display:flex;"><span><span style="color:#00688b">x</span> := later
+</span></span></code></pre></div><p><code>?=</code> 定义变量表示如果变量被定义过，则什么也不做，否则在此处定义</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">FOO</span> ?= bar
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># 等价于
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#a61717;background-color:#e3d2d2">ifeq</span> <span style="color:#a61717;background-color:#e3d2d2">(</span><span style="color:#8b008b;font-weight:bold">$(</span><span style="color:#00688b">origin</span> <span style="color:#00688b">FOO</span><span style="color:#8b008b;font-weight:bold">)</span><span style="color:#a61717;background-color:#e3d2d2">,</span> <span style="color:#a61717;background-color:#e3d2d2">undefined)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00688b">FOO</span> = bar
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">endif</span>
+</span></span></code></pre></div><h2 id="变量的高级用法">变量的高级用法</h2>
+<h3 id="变量替换">变量替换</h3>
+<p>格式：<code>$(var:a=b)</code>，把变量“var”中所有以“a”字串“结尾”的“a”替换成“b”字串。这里的“结尾”意思是“空格”或是“结束符”。
+例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">foo</span> := a.o b.o c.o
+</span></span><span style="display:flex;"><span><span style="color:#00688b">bar</span> := <span style="color:#8b008b;font-weight:bold">$(</span>foo:.o=.c<span style="color:#8b008b;font-weight:bold">)</span>
+</span></span></code></pre></div><p>静态模式替换</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">foo</span> := a.o b.o c.o
+</span></span><span style="display:flex;"><span><span style="color:#00688b">bar</span> := <span style="color:#8b008b;font-weight:bold">$(</span>foo:%.o=%.c<span style="color:#8b008b;font-weight:bold">)</span>
+</span></span></code></pre></div><h3 id="把变量的值再当成变量">把变量的值再当成变量</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">x</span> = y
+</span></span><span style="display:flex;"><span><span style="color:#00688b">y</span> = z
+</span></span><span style="display:flex;"><span><span style="color:#00688b">a</span> := <span style="color:#8b008b;font-weight:bold">$($(</span>x<span style="color:#8b008b;font-weight:bold">))</span> <span style="color:#228b22"># =&gt; a := $(y) =&gt; a := z</span>
+</span></span></code></pre></div><h2 id="追加变量值">追加变量值</h2>
+<p><code>+=</code>可以对变量添加元素，例如</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#00688b">objects</span> = main.o foo.o bar.o utils.o
+</span></span><span style="display:flex;"><span><span style="color:#00688b">objects</span> += another.o
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># objects =&gt; main.o foo.o bar.o utils.o another.o
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"># 等价于 object := $(objects) another.o
+</span></span></span></code></pre></div><h2 id="override">override</h2>
+<p>override 指令可以覆盖之前的定义以及命令行输入的定义</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">override</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;variable&gt;;</span> <span style="color:#a61717;background-color:#e3d2d2">=</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;value&gt;;</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># or
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#008b45">override &lt;variable&gt;; </span>:= &lt;value&gt;;
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># append
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#a61717;background-color:#e3d2d2">override</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;variable&gt;;</span> <span style="color:#a61717;background-color:#e3d2d2">+=</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;more</span> <span style="color:#a61717;background-color:#e3d2d2">text&gt;;</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># multi variables
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#a61717;background-color:#e3d2d2">override</span> <span style="color:#a61717;background-color:#e3d2d2">define</span> <span style="color:#a61717;background-color:#e3d2d2">foo</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">bar</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">endef</span>
+</span></span></code></pre></div><h2 id="多行变量">多行变量</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">define</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;variable&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;...&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">endef</span>
+</span></span></code></pre></div><p>此变量可以是函数，命令，文字或其他值</p>
+<h2 id="环境变量">环境变量</h2>
+<p>系统环境的变量会自动载入Makefile文件中，Makefile内可以覆盖系统的环境变量，但是如果make命令加上<code>-e</code>参数，则环境变量会覆盖Makefile内的变量。</p>
+<h2 id="目标变量">目标变量</h2>
+<p>只在指定的目标规则和连带的规则中有效的变量，语法为</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">&lt;target ...&gt; </span>: &lt;variable-assignment&gt;
+</span></span><span style="display:flex;"><span><span style="color:#008b45">&lt;target ...&gt; </span>: overide &lt;variable-assignment&gt;
+</span></span></code></pre></div><p><code>&lt;variable-assignment&gt;</code>可以是<code>=</code>,<code>:=</code>,<code>+=</code>, <code>?=</code>表达式</p>
+<h2 id="模式变量">模式变量</h2>
+<p>把变量定义在符合这种模式的目标上</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">&lt;pattern ...&gt; </span>: &lt;variable-assignment&gt;
+</span></span><span style="display:flex;"><span><span style="color:#008b45">&lt;pattern ...&gt; </span>: overide &lt;variable-assignment&gt;
+</span></span></code></pre></div><p>例如:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#008b45">%.o </span>: CFLAG = -o
+</span></span></code></pre></div><h1 id="条件判断">条件判断</h1>
+<p>语法</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;conditional-directive&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;text-if-true&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">else</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">&lt;text-if-false&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">endif</span>
+</span></span></code></pre></div><p><code>&lt;conditional-directive&gt;</code>可以是</p>
+<ol>
+<li><code>ifeq</code>，语法为</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">ifeq</span> <span style="color:#a61717;background-color:#e3d2d2">(&lt;arg1&gt;,</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;arg2&gt;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">ifeq</span> <span style="color:#cd5555">&#39;&lt;arg1&gt;&#39;</span><span style="color:#a61717;background-color:#e3d2d2">,</span> <span style="color:#cd5555">&#39;&lt;arg2&gt;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">ifeq</span> <span style="color:#cd5555">&#34;&lt;arg1&gt;&#34;</span><span style="color:#a61717;background-color:#e3d2d2">,</span> <span style="color:#cd5555">&#34;&lt;arg2&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># &#39;&#39; 和 &#34;&#34; 可以混合比较
+</span></span></span></code></pre></div><ol start="2">
+<li><code>ifneq</code> 使用类似于<code>ifeq</code></li>
+<li><code>ifdef</code>, 判断是否有定义，不会展开</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#a61717;background-color:#e3d2d2">ifdef</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;variable&gt;</span>
+</span></span></code></pre></div><ol start="4">
+<li><code>ifndef</code>, 类似于<code>ifdef</code></li>
+</ol>
+<h1 id="函数">函数</h1>
+<p>函数的调用语法</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-makefile" data-lang="makefile"><span style="display:flex;"><span><span style="color:#8b008b;font-weight:bold">$(</span>&lt;<span style="color:#00688b">function</span>&gt; &lt;<span style="color:#00688b">arguments</span>&gt;<span style="color:#8b008b;font-weight:bold">)</span><span style="color:#a61717;background-color:#e3d2d2">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#228b22"># or
+</span></span></span><span style="display:flex;"><span><span style="color:#228b22"></span><span style="color:#a61717;background-color:#e3d2d2">${&lt;function&gt;</span> <span style="color:#a61717;background-color:#e3d2d2">&lt;arguments&gt;}</span>
+</span></span></code></pre></div><p>参考[[常用指令和函数]]</p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">最后修改于 2024-10-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts">
+			下回<br>已经到头啦。
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/linux%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97/">
+			上回<br>linux内核模块
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://startdriver.github.io/">
+    
+        <div class="nav-title">
+            Linux驱动学习笔记
+        </div>
+        
+        <div class="nav-subtitle">
+            linux driver learning note
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                归档
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                分类
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                标签
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 StartDriver
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b9%a6%e5%86%99%e8%a7%84%e5%88%99" class="nav-书写规则">
+									书写规则
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%87%e4%bb%b6%e6%90%9c%e5%af%bb" class="nav-文件搜寻">
+									文件搜寻
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bc%aa%e7%9b%ae%e6%a0%87" class="nav-伪目标">
+									伪目标
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e7%9b%ae%e6%a0%87" class="nav-多目标">
+									多目标
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%9d%99%e6%80%81%e6%a8%a1%e5%bc%8f" class="nav-静态模式">
+									静态模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%87%aa%e5%8a%a8%e7%94%9f%e6%88%90%e4%be%9d%e8%b5%96" class="nav-自动生成依赖">
+									自动生成依赖
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4" class="nav-命令">
+									命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e6%98%be%e7%a4%ba" class="nav-命令显示">
+									命令显示
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e7%8e%af%e5%a2%83" class="nav-命令环境">
+									命令环境
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%91%bd%e4%bb%a4%e9%94%99%e8%af%af" class="nav-命令错误">
+									命令错误
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b5%8c%e5%a5%97%e6%89%a7%e8%a1%8cmake" class="nav-嵌套执行make">
+									嵌套执行make
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%9a%e4%b9%89%e5%91%bd%e4%bb%a4%e5%8c%85" class="nav-定义命令包">
+									定义命令包
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f" class="nav-变量">
+									变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e5%9f%ba%e7%a1%80" class="nav-变量基础">
+									变量基础
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e7%9a%84%e9%ab%98%e7%ba%a7%e7%94%a8%e6%b3%95" class="nav-变量的高级用法">
+									变量的高级用法
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%8f%98%e9%87%8f%e6%9b%bf%e6%8d%a2" class="nav-变量替换">
+									变量替换
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8a%8a%e5%8f%98%e9%87%8f%e7%9a%84%e5%80%bc%e5%86%8d%e5%bd%93%e6%88%90%e5%8f%98%e9%87%8f" class="nav-把变量的值再当成变量">
+									把变量的值再当成变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%bf%bd%e5%8a%a0%e5%8f%98%e9%87%8f%e5%80%bc" class="nav-追加变量值">
+									追加变量值
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#override" class="nav-override">
+									override
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%a1%8c%e5%8f%98%e9%87%8f" class="nav-多行变量">
+									多行变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" class="nav-环境变量">
+									环境变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%9b%ae%e6%a0%87%e5%8f%98%e9%87%8f" class="nav-目标变量">
+									目标变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%a8%a1%e5%bc%8f%e5%8f%98%e9%87%8f" class="nav-模式变量">
+									模式变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad" class="nav-条件判断">
+									条件判断
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b0" class="nav-函数">
+									函数
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 StartDriver
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

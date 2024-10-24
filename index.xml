@@ -7,9 +7,220 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>2024 StartDriver</copyright>
-    <lastBuildDate>Thu, 24 Oct 2024 21:29:55 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 24 Oct 2024 22:35:55 +0800</lastBuildDate>
     
         <atom:link href="https://startdriver.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    
+        <item>
+        <title>makefile基本知识</title>
+        <link>https://startdriver.github.io/posts/makfile%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+        <pubDate>Thu, 24 Oct 2024 22:35:55 +0800</pubDate>
+        
+        <guid>https://startdriver.github.io/posts/makfile%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+        <description>Linux驱动学习笔记 https://startdriver.github.io/posts/makfile%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/ -&lt;p&gt;参考&lt;a href=&#34;https://seisman.github.io/how-to-write-makefile&#34;&gt;how-to-write-makefile&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;$(sources:.c=.d)&lt;/code&gt;: 替换列表&lt;code&gt;sources&lt;/code&gt;中元素中的&lt;code&gt;.c&lt;/code&gt;为&lt;code&gt;.d&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;%.&lt;/code&gt;: 任意字符&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;*&lt;/code&gt;: 任意字符
+&lt;code&gt;~&lt;/code&gt;: &lt;code&gt;HOME&lt;/code&gt;环境变量
+&lt;code&gt;?&lt;/code&gt;:
+&lt;code&gt;$&amp;lt;&lt;/code&gt;: 表示第一个依赖文件
+&lt;code&gt;$@&lt;/code&gt;: 表示目标集合，依次取出目标，并执行命令
+&lt;code&gt;$$&lt;/code&gt;: &lt;code&gt;$&lt;/code&gt;字符
+&lt;code&gt;$*&lt;/code&gt;: 表示目标文件（例如 &lt;code&gt;file.o&lt;/code&gt;中的&lt;code&gt;file&lt;/code&gt;)
+&lt;code&gt;$$$$&lt;/code&gt;: 随机的四位数&lt;/p&gt;
+&lt;h1 id=&#34;书写规则&#34;&gt;书写规则&lt;/h1&gt;
+&lt;h2 id=&#34;文件搜寻&#34;&gt;文件搜寻&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;VPATH&lt;/code&gt;指定寻找文件的路径，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;VPATH&lt;/span&gt; = src:../headers
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;伪目标&#34;&gt;伪目标&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;.PHONY: &lt;/code&gt;：指定伪目标，不生成目标，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;.PHONY&lt;/span&gt;: clean
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;clean&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	rm -r *.o
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;多目标&#34;&gt;多目标&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target1&amp;gt; &amp;lt;target2&amp;gt; ... &lt;/span&gt;: &amp;lt;prerequirements&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;commands&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;等价于&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target1&amp;gt; &lt;/span&gt;: &amp;lt;prerequirements&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;commands&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target2&amp;gt; &lt;/span&gt;: &amp;lt;prerequirements&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;commands&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;静态模式&#34;&gt;静态模式&lt;/h2&gt;
+&lt;p&gt;语法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target ...&amp;gt; &lt;/span&gt;: &amp;lt;target-pattern&amp;gt; : &amp;lt;prereq-pattern ...&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;command&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;依次对目标文件&lt;code&gt;&amp;lt;target ...&amp;gt;&lt;/code&gt;中以&lt;code&gt;&amp;lt;target-pattern&amp;gt;&lt;/code&gt;的形式作为目标，以&lt;code&gt;&amp;lt;prereq-pattern&amp;gt;&lt;/code&gt;形式作为目标文件的依赖。例如:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;objects&lt;/span&gt; = foo.o bar.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;all&lt;/span&gt;: &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;objects&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;$(objects)&lt;/span&gt;: %.o: %.c
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; -c &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; $&amp;lt; -o &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;等价于：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;foo.o&lt;/span&gt;: foo.c
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; -c &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; foo.c -o foo.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;bar.o&lt;/span&gt;: bar.c
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; -c &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CFLAGS&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; bar.c -o bar.o
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;自动生成依赖&#34;&gt;自动生成依赖&lt;/h2&gt;
+&lt;p&gt;在Makefile中，我们的依赖关系可能会需要包含一系列的头文件，但是，如果是一个比较大型的工程，你必需清楚哪些C文件包含了哪些头文件，并且，你在加入或删除头文件时，也需要小心地修改Makefile，这是一个很没有维护性的工作。为了避免这种繁重而又容易出错的事情，我们可以使用C/C++编译的一个功能。大多数的C/C++编译器都支持一个“-M”的选项，即自动找寻源文件中包含的头文件，并生成一个依赖关系。例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# 有的编译器的参数是MM，那么指令变为 cc -MM main.c&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cc -M main.c
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# main.o: main.c hello.h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;GNU组织建议把编译器为每一个源文件的自动生成的依赖关系放到一个文件中，为每一个 &lt;code&gt;name.c&lt;/code&gt; 的文件都生成一个 &lt;code&gt;name.d&lt;/code&gt; 的Makefile文件， &lt;code&gt;.d&lt;/code&gt; 文件中就存放对应 &lt;code&gt;.c&lt;/code&gt; 文件的依赖关系。于是，我们可以写出 &lt;code&gt;.c&lt;/code&gt; 文件和 &lt;code&gt;.d&lt;/code&gt; 文件的依赖关系，并让make自动更新或生成 &lt;code&gt;.d&lt;/code&gt; 文件，并把其包含在我们的主Makefile中，这样，我们就可以自动化地生成每个文件的依赖关系了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;%.d&lt;/span&gt;: %.c
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @set -e; rm -f &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CC&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; -M &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;CPPFLAGS&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; $&amp;lt; &amp;gt; &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;.&lt;span style=&#34;color:#00688b&#34;&gt;$$$$&lt;/span&gt;; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;    sed &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;s,\($*\)\.o[ :]*,\1.o $@ : ,g&amp;#39;&lt;/span&gt; &amp;lt; &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;.&lt;span style=&#34;color:#00688b&#34;&gt;$$$$&lt;/span&gt; &amp;gt; &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;; &lt;span style=&#34;color:#cd5555&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#cd5555&#34;&gt;&lt;/span&gt;    rm -f &lt;span style=&#34;color:#00688b&#34;&gt;$@&lt;/span&gt;.&lt;span style=&#34;color:#00688b&#34;&gt;$$$$&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;之后再在Makefile中加入&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;include $(sources&lt;/span&gt;:.c=.d)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;命令&#34;&gt;命令&lt;/h1&gt;
+&lt;h2 id=&#34;命令显示&#34;&gt;命令显示&lt;/h2&gt;
+&lt;p&gt;每条命令前都是以&lt;code&gt;&amp;lt;Tab&amp;gt;&lt;/code&gt;开头，在命令前加&lt;code&gt;@&lt;/code&gt;可以使命令在执行时不显示出来，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;display&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	@echo &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;not display&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# 在执行时不显示命令本身&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#658b00&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;display&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;全局忽略显示: 在make是加上&lt;code&gt;-s&lt;/code&gt;或&lt;code&gt;--silent&lt;/code&gt;或&lt;code&gt;--quiet&lt;/code&gt;参数
+如何要只显示命令，而不用执行，在使用&lt;code&gt;-n&lt;/code&gt;或&lt;code&gt;--just-print&lt;/code&gt;参数&lt;/p&gt;
+&lt;h2 id=&#34;命令环境&#34;&gt;命令环境&lt;/h2&gt;
+&lt;p&gt;每条命令都在一个独立shell环境中，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;exec&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#658b00&#34;&gt;pwd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#658b00&#34;&gt;cd&lt;/span&gt; ..
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#658b00&#34;&gt;pwd&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# 和前一个pwd的输出是一样的，因为shell环境是独立的，不会受上一个cd .. 的影响&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;命令错误&#34;&gt;命令错误&lt;/h2&gt;
+&lt;p&gt;在命令前加&lt;code&gt;-&lt;/code&gt;可以忽略错误，不会中断make的执行，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;clean&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-rm -f *.o
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;全局忽略错误：在make时加上&lt;code&gt;-i&lt;/code&gt;或&lt;code&gt;--ignore-error&lt;/code&gt;参数
+&lt;code&gt;-k&lt;/code&gt;或&lt;code&gt;--keep-going&lt;/code&gt;是表示，当命令发生错误时，只中断当前目标的规则，不影响其他目标的规则。&lt;/p&gt;
+&lt;h2 id=&#34;嵌套执行make&#34;&gt;嵌套执行make&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;subsystem&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#658b00&#34;&gt;cd&lt;/span&gt; subdir &amp;amp;&amp;amp; &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;MAKE&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;或&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;subsystem&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;MAKE&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; -C subdir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;父级的变量可以传递到子级中，&lt;code&gt;-w&lt;/code&gt;参数可以显示正在进入子级执行makefile，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;make: Entering directory &lt;span style=&#34;color:#cd5555&#34;&gt;`&lt;/span&gt;/home/&amp;lt;home&amp;gt;/gnu/make&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#39;&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;定义命令包&#34;&gt;定义命令包&lt;/h2&gt;
+&lt;p&gt;语法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;define&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;command-package-name&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;command1&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;command2&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;endef&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# 通过$(&amp;lt;command-package-name&amp;gt;)来调用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义一组命令为一个命令包，需要指定这一序列命令的时候，调用&lt;code&gt;$(&amp;lt;command-package-name&amp;gt;)&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id=&#34;变量&#34;&gt;变量&lt;/h1&gt;
+&lt;p&gt;变量的名字是大小写敏感的，命名可以包含字符、数字，下划线（可以是数字开头），不要包含: &lt;code&gt;:&lt;/code&gt;, &lt;code&gt;#&lt;/code&gt;, &lt;code&gt;=&lt;/code&gt;, 空字符，推荐大写单词首字母，例如&lt;code&gt;MakeFlags&lt;/code&gt;，以避免和环境变量冲突。变量在使用时类似于C/C++中的宏，是直接展开的。&lt;/p&gt;
+&lt;h2 id=&#34;变量基础&#34;&gt;变量基础&lt;/h2&gt;
+&lt;p&gt;变量的定义，直接给予初值，使用时在变量名前加&lt;code&gt;$&lt;/code&gt;, 最好对变量加上&lt;code&gt;()&lt;/code&gt;或&lt;code&gt;{}&lt;/code&gt;，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Makefile&#34; data-lang=&#34;Makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;objects&lt;/span&gt; = program.o foo.o utils.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	cc -o program &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;objects&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;$(objects)&lt;/span&gt;: defs.h
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;变量可以使用后面的变量来定义，&lt;code&gt;=&lt;/code&gt;定义是用时展开&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;:=&lt;/code&gt; 定义变量是立即展开，可以阻止使用后面的变量来定义，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;x&lt;/span&gt; := foo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;y&lt;/span&gt; := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;x&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt; bar
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;x&lt;/span&gt; := later
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;等价于&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;y&lt;/span&gt; := foo bar
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;x&lt;/span&gt; := later
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;?=&lt;/code&gt; 定义变量表示如果变量被定义过，则什么也不做，否则在此处定义&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;FOO&lt;/span&gt; ?= bar
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# 等价于
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;ifeq&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;origin&lt;/span&gt; &lt;span style=&#34;color:#00688b&#34;&gt;FOO&lt;/span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;undefined)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#00688b&#34;&gt;FOO&lt;/span&gt; = bar
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;endif&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;变量的高级用法&#34;&gt;变量的高级用法&lt;/h2&gt;
+&lt;h3 id=&#34;变量替换&#34;&gt;变量替换&lt;/h3&gt;
+&lt;p&gt;格式：&lt;code&gt;$(var:a=b)&lt;/code&gt;，把变量“var”中所有以“a”字串“结尾”的“a”替换成“b”字串。这里的“结尾”意思是“空格”或是“结束符”。
+例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;foo&lt;/span&gt; := a.o b.o c.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;bar&lt;/span&gt; := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;foo:.o=.c&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;静态模式替换&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;foo&lt;/span&gt; := a.o b.o c.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;bar&lt;/span&gt; := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;foo:%.o=%.c&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;把变量的值再当成变量&#34;&gt;把变量的值再当成变量&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;x&lt;/span&gt; = y
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;y&lt;/span&gt; = z
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;a&lt;/span&gt; := &lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$($(&lt;/span&gt;x&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;))&lt;/span&gt; &lt;span style=&#34;color:#228b22&#34;&gt;# =&amp;gt; a := $(y) =&amp;gt; a := z&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;追加变量值&#34;&gt;追加变量值&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;+=&lt;/code&gt;可以对变量添加元素，例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;objects&lt;/span&gt; = main.o foo.o bar.o utils.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#00688b&#34;&gt;objects&lt;/span&gt; += another.o
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# objects =&amp;gt; main.o foo.o bar.o utils.o another.o
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# 等价于 object := $(objects) another.o
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;override&#34;&gt;override&lt;/h2&gt;
+&lt;p&gt;override 指令可以覆盖之前的定义以及命令行输入的定义&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;variable&amp;gt;;&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;value&amp;gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# or
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;override &amp;lt;variable&amp;gt;; &lt;/span&gt;:= &amp;lt;value&amp;gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# append
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;variable&amp;gt;;&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;more&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;text&amp;gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# multi variables
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;define&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;foo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;bar&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;endef&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;多行变量&#34;&gt;多行变量&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;define&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;variable&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;...&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;endef&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;此变量可以是函数，命令，文字或其他值&lt;/p&gt;
+&lt;h2 id=&#34;环境变量&#34;&gt;环境变量&lt;/h2&gt;
+&lt;p&gt;系统环境的变量会自动载入Makefile文件中，Makefile内可以覆盖系统的环境变量，但是如果make命令加上&lt;code&gt;-e&lt;/code&gt;参数，则环境变量会覆盖Makefile内的变量。&lt;/p&gt;
+&lt;h2 id=&#34;目标变量&#34;&gt;目标变量&lt;/h2&gt;
+&lt;p&gt;只在指定的目标规则和连带的规则中有效的变量，语法为&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target ...&amp;gt; &lt;/span&gt;: &amp;lt;variable-assignment&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;target ...&amp;gt; &lt;/span&gt;: overide &amp;lt;variable-assignment&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;&amp;lt;variable-assignment&amp;gt;&lt;/code&gt;可以是&lt;code&gt;=&lt;/code&gt;,&lt;code&gt;:=&lt;/code&gt;,&lt;code&gt;+=&lt;/code&gt;, &lt;code&gt;?=&lt;/code&gt;表达式&lt;/p&gt;
+&lt;h2 id=&#34;模式变量&#34;&gt;模式变量&lt;/h2&gt;
+&lt;p&gt;把变量定义在符合这种模式的目标上&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;pattern ...&amp;gt; &lt;/span&gt;: &amp;lt;variable-assignment&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;&amp;lt;pattern ...&amp;gt; &lt;/span&gt;: overide &amp;lt;variable-assignment&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;例如:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#008b45&#34;&gt;%.o &lt;/span&gt;: CFLAG = -o
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;条件判断&#34;&gt;条件判断&lt;/h1&gt;
+&lt;p&gt;语法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;conditional-directive&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;text-if-true&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;text-if-false&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;endif&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;&amp;lt;conditional-directive&amp;gt;&lt;/code&gt;可以是&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;ifeq&lt;/code&gt;，语法为&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;ifeq&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;(&amp;lt;arg1&amp;gt;,&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;arg2&amp;gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;ifeq&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;&amp;lt;arg1&amp;gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#39;&amp;lt;arg2&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;ifeq&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;lt;arg1&amp;gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#cd5555&#34;&gt;&amp;#34;&amp;lt;arg2&amp;gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# &amp;#39;&amp;#39; 和 &amp;#34;&amp;#34; 可以混合比较
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;&lt;code&gt;ifneq&lt;/code&gt; 使用类似于&lt;code&gt;ifeq&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ifdef&lt;/code&gt;, 判断是否有定义，不会展开&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;ifdef&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;variable&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;&lt;code&gt;ifndef&lt;/code&gt;, 类似于&lt;code&gt;ifdef&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;函数&#34;&gt;函数&lt;/h1&gt;
+&lt;p&gt;函数的调用语法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-makefile&#34; data-lang=&#34;makefile&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;$(&lt;/span&gt;&amp;lt;&lt;span style=&#34;color:#00688b&#34;&gt;function&lt;/span&gt;&amp;gt; &amp;lt;&lt;span style=&#34;color:#00688b&#34;&gt;arguments&lt;/span&gt;&amp;gt;&lt;span style=&#34;color:#8b008b;font-weight:bold&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;# or
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#228b22&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;${&amp;lt;function&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;lt;arguments&amp;gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;参考[[常用指令和函数]]&lt;/p&gt;
+- https://startdriver.github.io/posts/makfile%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/ - 2024 StartDriver</description>
+        </item>
     
     
     
